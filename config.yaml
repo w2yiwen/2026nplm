@@ -1,0 +1,74 @@
+# 单文件配置：路径、预处理、各模型注册、生成提示
+# 语料：当前仅使用中文 wiki_zh_2019（约 1.23GB），全量时请保持 preprocess 下各项为 null，且命令行勿加 --max-total-chars 等截断参数。
+seed: 42
+device: auto
+data_root: data
+processed_dir: processed
+outputs_dir: outputs
+default_model: nplm
+train_split: 0.9
+max_vocab_size: 8000
+
+preprocess:
+  max_files_per_dataset: null
+  max_total_chars: null
+  max_chars_per_dataset: null
+
+datasets:
+  - id: wiki_zh_2019
+    language: zh
+    root: wiki_zh_2019/wiki_zh
+    format: jsonl_glob
+    glob_pattern: "**/*"
+    text_key: text
+
+models:
+  ngram:
+    module: model.ngram.model
+    class: NGramLM
+    impl_status: ready
+    hyperparams:
+      n: 2
+      smoothing: 0.01
+    checkpoint_subdir: ngram
+  nplm:
+    module: model.nplm.model
+    class: NPLM
+    impl_status: stub
+    hyperparams:
+      embed_dim: 128
+      hidden_dim: 256
+      context_len: 32
+      learning_rate: 0.001
+      epochs: 1
+      batch_size: 64
+    checkpoint_subdir: nplm
+  seq2seq:
+    module: model.seq2seq.model
+    class: Seq2SeqLM
+    impl_status: stub
+    hyperparams:
+      embed_dim: 128
+      hidden_dim: 256
+      learning_rate: 0.001
+      epochs: 1
+    checkpoint_subdir: seq2seq
+  gpt:
+    module: model.gpt.model
+    class: GPTLM
+    impl_status: stub
+    hyperparams:
+      n_layer: 4
+      n_head: 4
+      embed_dim: 128
+      context_len: 128
+      learning_rate: 0.0003
+      epochs: 1
+      batch_size: 32
+    checkpoint_subdir: gpt
+
+generation:
+  zh:
+    prefixes: ["科学", "历史", "北京", "中国", "植物"]
+  en:
+    prefixes: ["The ", "In ", "According to ", "Science ", "Reuters "]
