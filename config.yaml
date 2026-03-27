@@ -34,13 +34,13 @@ models:
   nplm:
     module: model.nplm.model
     class: NPLM
-    impl_status: stub
+    impl_status: ready
     hyperparams:
       embed_dim: 128
       hidden_dim: 256
       context_len: 32
       learning_rate: 0.001
-      epochs: 1
+      epochs: 5
       batch_size: 64
     checkpoint_subdir: nplm
   seq2seq:
