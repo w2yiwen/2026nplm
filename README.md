@@ -13,6 +13,7 @@
 1. 将语料置于 **`data/`** 下，路径与格式需与 **`config.yaml`** 中 `datasets` 一致。
 2. 默认配置仅使用 **`data/wiki_zh_2019/wiki_zh`**（JSONL 百科文本，体量约 **1.23GB** 量级，视你下载版本而定）。
 
+
 全量预处理前，请确保：
 
 - `config.yaml` 中 `preprocess` 下各项为 `null`（不截断）；
@@ -87,13 +88,13 @@ python run.py plot
 
 入口脚本为 **`run.py`**，子命令如下：
 
-| 子命令       | 作用                                                  |
-| ------------ | ----------------------------------------------------- |
+| 子命令 | 作用 |
+|--------|------|
 | `preprocess` | 读取 `config.yaml` 中的 `datasets`，写出 `processed/` |
-| `train`      | 训练 `--model` 指定的已注册模型                       |
-| `generate`   | 加载 checkpoint 生成文本；`--lang zh` / `en`          |
-| `evaluate`   | 在验证集上计算指标                                    |
-| `plot`       | 读取 `outputs/metrics/*_eval.json` 绘制对比图         |
+| `train` | 训练 `--model` 指定的已注册模型 |
+| `generate` | 加载 checkpoint 生成文本；`--lang zh` / `en` |
+| `evaluate` | 在验证集上计算指标 |
+| `plot` | 读取 `outputs/metrics/*_eval.json` 绘制对比图 |
 
 常用参数：
 
@@ -139,33 +140,32 @@ python run.py preprocess --max-total-chars 100000 --max-files-per-dataset 20
     ├── registry.py      # 模型注册与实例化
     ├── ngram/           # 字符级 N-gram
     ├── nplm/            # NPLM
-    ├── seq2seq/         #
-    └── gpt/             #
+    ├── seq2seq/         # 
+    └── gpt/             # 
 ```
 
 ---
 
 ## 模型与实现状态
 
-| 目录            | 说明                                                                                                                 |
-| --------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `model/ngram`   | **已实现**：频次统计、Laplace 平滑、贪心生成、验证困惑度；超参见 `models.ngram.hyperparams`（如 `n`、`smoothing`）。 |
-| `model/nplm`    | 桩实现，可替换为真实 NPLM 训练逻辑。                                                                                 |
-| `model/seq2seq` | **已实现**：字符级 GRU Encoder-Decoder，支持训练、贪心生成、验证困惑度与 checkpoint 保存/加载。                      |
-| `model/gpt`     | 桩实现，便于接口对齐与后续对比。                                                                                     |
+| 目录 | 说明 |
+|------|------|
+| `model/ngram` | **已实现**：频次统计、Laplace 平滑、贪心生成、验证困惑度；超参见 `models.ngram.hyperparams`（如 `n`、`smoothing`）。 |
+| `model/nplm` | 桩实现，可替换为真实 NPLM 训练逻辑。 |
+| `model/seq2seq`、`model/gpt` | 桩实现，便于接口对齐与后续对比。 |
 
 ---
 
 ## 输出说明
 
-| 路径                                       | 内容                          |
-| ------------------------------------------ | ----------------------------- |
-| `processed/train.txt`、`val.txt`           | 按行存储的文本                |
-| `processed/vocab.json`                     | 字符词表                      |
-| `outputs/checkpoints/<模型>/checkpoint.pt` | 模型检查点                    |
-| `outputs/metrics/`                         | 训练/评估 JSON                |
-| `outputs/samples/`                         | 生成样例文本                  |
-| `outputs/figures/`                         | 对比图（如 `comparison.png`） |
+| 路径 | 内容 |
+|------|------|
+| `processed/train.txt`、`val.txt` | 按行存储的文本 |
+| `processed/vocab.json` | 字符词表 |
+| `outputs/checkpoints/<模型>/checkpoint.pt` | 模型检查点 |
+| `outputs/metrics/` | 训练/评估 JSON |
+| `outputs/samples/` | 生成样例文本 |
+| `outputs/figures/` | 对比图（如 `comparison.png`） |
 
 ---
 

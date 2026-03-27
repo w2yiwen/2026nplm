@@ -46,17 +46,12 @@ models:
   seq2seq:
     module: model.seq2seq.model
     class: Seq2SeqLM
-    impl_status: ready
+    impl_status: stub
     hyperparams:
       embed_dim: 128
       hidden_dim: 256
-      num_layers: 1
-      dropout: 0.1
       learning_rate: 0.001
       epochs: 1
-      batch_size: 64
-      max_seq_len: 160
-      max_val_lines: 5000
     checkpoint_subdir: seq2seq
   gpt:
     module: model.gpt.model
