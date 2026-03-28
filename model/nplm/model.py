@@ -143,7 +143,7 @@ class NPLM(LanguageModel):
                 loss.backward()
                 optimizer.step()
                 total_loss += loss.item()
-            print(total_loss)
+            #print(total_loss)
 
         # 5. 保存结果
         ckpt_dir = ctx.outputs_dir / "checkpoints" / self.spec.checkpoint_subdir
@@ -203,7 +203,7 @@ class NPLM(LanguageModel):
                     
                     logits = model(x)
                     # 贪心选择
-                    #next_idx = torch.argmax(logits, dim=1).item()
+                    next_idx = torch.argmax(logits, dim=1).item()
 
                     # --- 新增逻辑 1: 惩罚 EOS (防止早退) ---
                     min_gen_length = 20  # 设置你期望的最小字数
@@ -211,6 +211,13 @@ class NPLM(LanguageModel):
                     if current_gen_len < min_gen_length:
                         eos_idx = char_to_idx[EOS]
                         logits[0, eos_idx] = -1e10  # 还没写够，不许说再见
+
+                    #空格惩罚
+                    # 在 generate 函数的循环中，计算出 logits 后
+                    space_idx = char_to_idx.get(" ", None)
+                    if space_idx is not None:
+                        # 强制将空格的概率降至最低，使其永远不会被抽中
+                        logits[0, space_idx] = -1e10 
 
                     # --- 新增逻辑 2: 温度采样 (增加灵活性) ---
                     temperature = 0.8  # 0.7-1.0 之间，数值越高越随机，越低越死板
